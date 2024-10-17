@@ -11,18 +11,30 @@ import (
 	"os"
 )
 
-// generate random data for line chart
-func generateLineItems(arrY []int, quantity int) []opts.LineData {
+// generate data for line chart Average case
+func generateLineAverageItems(arrY []int64, quantity int) []opts.LineData {
 	items := make([]opts.LineData, 0)
 	for i := 0; i < quantity; i++ {
 		y := arrY[i]
 		fmt.Println(y)
-		items = append(items, opts.LineData{Name: "microseconds", YAxisIndex: y, Value: arrY[i] / 1e3})
+		items = append(items, opts.LineData{Name: "microseconds", Value: arrY[i] / 1e3})
 	}
 	fmt.Println(items)
 	return items
 }
-func CreateLineChart(arrX []int, arrY []int, quantity int, SortName string) {
+
+func generateLineWorstItems(arrY []int64, quantity int) []opts.LineData {
+	items := make([]opts.LineData, 0)
+	for i := 0; i < quantity; i++ {
+		y := arrY[i]
+		fmt.Println(y)
+		items = append(items, opts.LineData{Name: "microseconds", Value: arrY[i] / 1e3})
+	}
+	fmt.Println(items)
+	return items
+}
+
+func CreateLineChart(arrX []int, arrY []int64, quantity int, SortName string) {
 	fileName := fmt.Sprintf("%s.html", SortName)
 
 	// create a new line instance
@@ -31,7 +43,9 @@ func CreateLineChart(arrX []int, arrY []int, quantity int, SortName string) {
 	// set some global options like Title/Legend/ToolTip or anything else
 	line.SetGlobalOptions(
 		charts.WithInitializationOpts(opts.Initialization{
-			Theme: types.ThemeInfographic,
+			//Theme: types.ThemeInfographic,
+			Theme: types.ThemeRoma,
+			//Theme: types.ThemeRomantic,
 		}),
 		charts.WithTitleOpts(opts.Title{
 			Title:    SortName,
@@ -49,7 +63,7 @@ func CreateLineChart(arrX []int, arrY []int, quantity int, SortName string) {
 
 	//line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
 	line.SetXAxis(stringArrayX).
-		AddSeries("Category A", generateLineItems(arrY, quantity)).
+		AddSeries("Average case", generateLineAverageItems(arrY, quantity)).
 		SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &tr}))
 	f, _ := os.Create(fileName)
 	_ = line.Render(f)

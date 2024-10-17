@@ -9,7 +9,7 @@ import (
 func Try1() {
 	//arr := []int{-9, -231, 67, -50, 42, -6, 4, 54, 2, 7, 71, 34, 242, 533, 23352, 523, 13, 11}
 	size := []int{100, 500, 1000, 5000, 10000}
-	arr := randArray(size[1], 2)
+	arr := randArray(size[0], 2)
 	fmt.Println(arr)
 	//CrazySort(arr)
 	//SelectSort(arr)
@@ -20,7 +20,8 @@ func Try1() {
 	timeStart := time.Now()
 	//InsertionSort(arr)
 	//ShellSort(arr, Gaps(lenght))
-	QuickSort(arr, 0, len(arr)-1)
+	//QuickSort(arr, 0, len(arr)-1)
+	BubbleSort(arr)
 	timeEnd := time.Now()
 	timeFinali := timeEnd.Sub(timeStart)
 	fmt.Println(arr, lenght, timeFinali)
@@ -37,7 +38,7 @@ func randArray(size int, seed int64) []int {
 	rand.Seed(seed)
 	arr := make([]int, size)
 	for i := 0; i < size; i++ {
-		arr[i] = rand.Intn(10000)
+		arr[i] = rand.Intn(100)
 	}
 	return arr
 }
@@ -61,6 +62,17 @@ func CrazySort(nums []int) []int {
 		counter++
 	}
 	return nums
+}
+
+func BubbleSort(arr []int) {
+	N := len(arr)
+	for i := 0; i < N-1; i++ {
+		for j := 0; j < N-i-1; j++ {
+			if arr[j] > arr[j+1] {
+				Swap(arr, j, j+1)
+			}
+		}
+	}
 }
 
 func Swap(arr []int, a, b int) []int {

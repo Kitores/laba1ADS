@@ -4,14 +4,15 @@ import (
 	"AlgsDataStruct/homeWorks/First/measurements"
 	"AlgsDataStruct/homeWorks/First/sorts"
 	"fmt"
+	"time"
 )
 
-var Sortnames = []string{"Selection Sort", "Insertion Sort", "Quick Sort"}
+var Sortnames = []string{"Selection Sort", "Insertion Sort", "Quick Sort", "Bubble Sort"}
 
 func main() {
 	//sorts.Try1()
-	//seed := time.Now().UnixNano()
-	seed := int64(12)
+	seed := time.Now().UnixNano()
+	//seed := int64(12)
 	for _, name := range Sortnames {
 		arrX, arrY := measurements.TimeMeasurement(name, seed)
 		quantity := len(arrX)
