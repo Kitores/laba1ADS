@@ -16,7 +16,7 @@ func generateLineAverageItems(arrY []int64, quantity int) []opts.LineData {
 	items := make([]opts.LineData, 0)
 	for i := 0; i < quantity; i++ {
 		y := arrY[i]
-		fmt.Println(y)
+		fmt.Println(float64(y) / 1e9)
 		items = append(items, opts.LineData{Name: "microseconds", Value: arrY[i] / 1e3})
 	}
 	fmt.Println(items)
@@ -34,7 +34,7 @@ func generateLineWorstItems(arrY []int64, quantity int) []opts.LineData {
 	return items
 }
 
-func CreateLineChart(arrX []int, arrY []int64, quantity int, SortName string) {
+func CreateLineChart(arrX []int, arrY, arrYWorst []int64, quantity int, SortName string) {
 	fileName := fmt.Sprintf("%s.html", SortName)
 
 	// create a new line instance
@@ -64,6 +64,7 @@ func CreateLineChart(arrX []int, arrY []int64, quantity int, SortName string) {
 	//line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
 	line.SetXAxis(stringArrayX).
 		AddSeries("Average case", generateLineAverageItems(arrY, quantity)).
+		AddSeries("Worst case", generateLineAverageItems(arrYWorst, quantity)).
 		SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &tr}))
 	f, _ := os.Create(fileName)
 	_ = line.Render(f)
