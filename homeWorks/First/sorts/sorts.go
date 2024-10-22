@@ -12,10 +12,10 @@ func Try1() {
 	arr := randArray(10, 2)
 	fmt.Println(arr)
 	timeStart := time.Now()
-	srt := MergeSort(arr)
+	ShellSort(arr)
 	timeEnd := time.Since(timeStart)
 
-	fmt.Println(srt, timeEnd)
+	fmt.Println(arr, timeEnd)
 	//
 	//worstArr := randArray(size[4], 2)
 
@@ -130,7 +130,7 @@ func ShelliSort(nums []int) {
 		nums[j+1] = a
 	}
 }
-func Gaps(length int) []int {
+func shellGaps(length int) []int {
 	var gaps = []int{}
 	i := length
 	for i > 1 {
@@ -140,15 +140,16 @@ func Gaps(length int) []int {
 	return gaps
 }
 
-func ShellSort(nums []int, gaps []int) {
+func ShellSort(arr []int) {
+	gaps := shellGaps(len(arr))
 	k := len(gaps)
 	gap := gaps[0]
 	for k >= 1 {
-		for i := gap; i < len(nums); i++ {
-			a := nums[i]
-			for j := i - gap; j >= 0 && nums[j] > a; j -= gap {
-				nums[j+gap] = nums[j]
-				nums[j] = a
+		for i := gap; i < len(arr); i++ {
+			a := arr[i]
+			for j := i - gap; j >= 0 && arr[j] > a; j -= gap {
+				arr[j+gap] = arr[j]
+				arr[j] = a
 			}
 		}
 		k--

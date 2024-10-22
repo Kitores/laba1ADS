@@ -2,15 +2,18 @@ package measurements
 
 import (
 	"AlgsDataStruct/homeWorks/First/sorts"
+	"encoding/csv"
 	"fmt"
-	//"gonum.org/v1/gonum/stat"
 	"math/rand"
+	"os"
+	"strconv"
 	"time"
 )
 
-func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst []int64) {
+func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, arrYBest []int64) {
 	var execTime int64
 	var worstExecTime int64
+	var bestExecTime int64
 	sizes := []int{1000, 5000, 10000, 30000, 50000, 70000, 100000, 200000, 300000}
 	//sizes := []int{70}
 
@@ -21,37 +24,55 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst [
 		switch sortName {
 		case "Selection Sort":
 			execTime = measuringSelectionSort(arr)
+			bestExecTime = measuringSelectionSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringSelectionSort(arr)
 		case "Insertion Sort":
 			execTime = measuringInsertionSort(arr)
+			bestExecTime = measuringInsertionSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringInsertionSort(arr)
 		case "Quick Sort":
 			execTime = measuringQuickSort(arr)
+			bestExecTime = measuringQuickSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringQuickSort(arr)
 		case "Bubble Sort":
 			execTime = measuringBubbleSort(arr)
+			bestExecTime = measuringBubbleSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringBubbleSort(arr)
 		case "Merge Sort":
 			execTime = measuringMergeSort(arr)
+			bestExecTime = measuringMergeSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringMergeSort(arr)
+		case "Shell Sort(shellGaps)":
+			execTime = measuringShellSort(arr)
+			bestExecTime = measuringShellSort(arr)
+			arr = randArray(size, seed)
+			sorts.ReverseQuickSort(arr, 0, size-1)
+			worstExecTime = measuringShellSort(arr)
 		}
-		fmt.Println(execTime, worstExecTime)
+		fmt.Println(execTime, worstExecTime, bestExecTime)
+
+		//genCSVfile(sortName, size, execTime)
+		arrYBest = append(arrYBest, bestExecTime)
 		arrYWorst = append(arrYWorst, worstExecTime)
 		arrY = append(arrY, execTime)
 		arrX = append(arrX, size)
 	}
-	//alpha, beta := stat.LinearRegression(float64(arrX), arrY, nil, false)
-	return arrX, arrY, arrYWorst
+	genCSVfile(sortName, arrX, arrY)
+	//alpha, beta := linearRegression(arrX, arrY)
+	//Plot()
+	//fmt.Printf("Уравнение регрессии: y = %f + %f * x\n", alpha, beta)
+
+	return arrX, arrY, arrYWorst, arrYBest
 }
 
 func TimeMeasurementWorst(sortName string, seed int64) (arrYWorst []int64) {
@@ -76,6 +97,7 @@ func TimeMeasurementWorst(sortName string, seed int64) (arrYWorst []int64) {
 		case "Merge Sort":
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringBubbleSort(arr)
+
 		}
 		fmt.Println(worstExecTime)
 		arrYWorst = append(arrYWorst, worstExecTime)
@@ -98,7 +120,6 @@ func measuringSelectionSort(arr []int) int64 {
 	timeFinally := timeEnd.Sub(timeStart)
 	Time := timeFinally.Nanoseconds()
 
-	//os.Stdout()
 	return Time
 }
 
@@ -135,4 +156,37 @@ func measuringMergeSort(arr []int) int64 {
 	timeFinally := timeEnd.Sub(timeStart)
 	Time := timeFinally.Nanoseconds()
 	return Time
+}
+func measuringShellSort(arr []int) int64 {
+	timeStart := time.Now()
+	sorts.ShellSort(arr)
+	timeEnd := time.Now()
+	timeFinally := timeEnd.Sub(timeStart)
+	Time := timeFinally.Nanoseconds()
+	return Time
+}
+func genCSVfile(sortName string, sizes []int, execTimes []int64) {
+	fileName := fmt.Sprintf("./homeWorks/First/measurements/%sData.csv", sortName)
+	file, err := os.Create(fileName)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+
+	csvWriter := csv.NewWriter(file)
+	rec := []string{"sizes", "execTimes"}
+	err = csvWriter.Write(rec)
+	if err != nil {
+		fmt.Println(err)
+	}
+	// Очищаем буфер перед закрытием
+	defer csvWriter.Flush()
+
+	for i := 0; i < len(sizes); i++ {
+		data := []string{strconv.Itoa(sizes[i]), strconv.Itoa(int(execTimes[i]))}
+		if err = csvWriter.Write(data); err != nil {
+			fmt.Println(err)
+		}
+	}
+
 }
