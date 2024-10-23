@@ -1,7 +1,7 @@
 package measurements
 
 import (
-	"AlgsDataStruct/homeWorks/First/sorts"
+	"AlgsDataStruct/internal/sorts"
 	"encoding/csv"
 	"fmt"
 	"math/rand"
@@ -10,11 +10,17 @@ import (
 	"time"
 )
 
-func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, arrYBest []int64) {
+func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, arrYBest, arrYAlmost []int64) {
 	var execTime int64
 	var worstExecTime int64
 	var bestExecTime int64
-	sizes := []int{1000, 5000, 10000, 30000, 50000, 70000, 100000, 200000, 300000}
+	var almostExecTime int64
+	sortsQuadro := []string{"Selection Sort", "Insertion Sort", "Bubble Sort", "Shell Sort(shellGaps)", "Shell Sort(hibbardGaps)", "Shell Sort(prattGaps)"}
+	sizes := []int{1000, 5000, 10000, 30000, 50000, 70000, 100000, 200000, 300000, 500000}
+	// O(n^2)
+	if contains(sortsQuadro, sortName) {
+		sizes = sizes[:6]
+	}
 	//sizes := []int{70}
 
 	for _, size := range sizes {
@@ -28,40 +34,87 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, 
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringSelectionSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringSelectionSort(arr)
 		case "Insertion Sort":
 			execTime = measuringInsertionSort(arr)
 			bestExecTime = measuringInsertionSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringInsertionSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringInsertionSort(arr)
+
 		case "Quick Sort":
 			execTime = measuringQuickSort(arr)
 			bestExecTime = measuringQuickSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringQuickSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringQuickSort(arr)
 		case "Bubble Sort":
 			execTime = measuringBubbleSort(arr)
 			bestExecTime = measuringBubbleSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringBubbleSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringBubbleSort(arr)
 		case "Merge Sort":
 			execTime = measuringMergeSort(arr)
 			bestExecTime = measuringMergeSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringMergeSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringMergeSort(arr)
 		case "Shell Sort(shellGaps)":
 			execTime = measuringShellSort(arr)
 			bestExecTime = measuringShellSort(arr)
 			arr = randArray(size, seed)
 			sorts.ReverseQuickSort(arr, 0, size-1)
 			worstExecTime = measuringShellSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringShellSort(arr)
+		case "Shell Sort(hibbardGaps)":
+			execTime = measuringShellSortHibbard(arr)
+			bestExecTime = measuringShellSortHibbard(arr)
+			arr = randArray(size, seed)
+			sorts.ReverseQuickSort(arr, 0, size-1)
+			worstExecTime = measuringShellSortHibbard(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringShellSortHibbard(arr)
+		case "Shell Sort(prattGaps)":
+			execTime = measuringShellSortPratt(arr)
+			bestExecTime = measuringShellSortPratt(arr)
+			arr = randArray(size, seed)
+			sorts.ReverseQuickSort(arr, 0, size-1)
+			worstExecTime = measuringShellSortPratt(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringShellSortPratt(arr)
+		case "Heap Sort":
+			execTime = measuringHeapSort(arr)
+			bestExecTime = measuringHeapSort(arr)
+			arr = randArray(size, seed)
+			sorts.ReverseQuickSort(arr, 0, size-1)
+			worstExecTime = measuringHeapSort(arr)
+			arr = randArray(size, seed)
+			sorts.QuickSort(arr, 0, size*9/10-1)
+			almostExecTime = measuringHeapSort(arr)
 		}
-		fmt.Println(execTime, worstExecTime, bestExecTime)
+		fmt.Println(execTime, worstExecTime, bestExecTime, almostExecTime)
 
 		//genCSVfile(sortName, size, execTime)
+		arrYAlmost = append(arrYAlmost, almostExecTime)
 		arrYBest = append(arrYBest, bestExecTime)
 		arrYWorst = append(arrYWorst, worstExecTime)
 		arrY = append(arrY, execTime)
@@ -72,9 +125,17 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, 
 	//Plot()
 	//fmt.Printf("Уравнение регрессии: y = %f + %f * x\n", alpha, beta)
 
-	return arrX, arrY, arrYWorst, arrYBest
+	return arrX, arrY, arrYWorst, arrYBest, arrYAlmost
 }
 
+func contains(slice []string, item string) bool {
+	for _, v := range slice {
+		if v == item {
+			return true
+		}
+	}
+	return false
+}
 func TimeMeasurementWorst(sortName string, seed int64) (arrYWorst []int64) {
 	var worstExecTime int64
 	sizes := []int{10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000}
@@ -165,8 +226,32 @@ func measuringShellSort(arr []int) int64 {
 	Time := timeFinally.Nanoseconds()
 	return Time
 }
+func measuringShellSortHibbard(arr []int) int64 {
+	timeStart := time.Now()
+	sorts.ShellSortHibbard(arr)
+	timeEnd := time.Now()
+	timeFinally := timeEnd.Sub(timeStart)
+	Time := timeFinally.Nanoseconds()
+	return Time
+}
+func measuringShellSortPratt(arr []int) int64 {
+	timeStart := time.Now()
+	sorts.ShellSortPratt(arr)
+	timeEnd := time.Now()
+	timeFinally := timeEnd.Sub(timeStart)
+	Time := timeFinally.Nanoseconds()
+	return Time
+}
+func measuringHeapSort(arr []int) int64 {
+	timeStart := time.Now()
+	sorts.HeapSort(arr)
+	timeEnd := time.Now()
+	timeFinally := timeEnd.Sub(timeStart)
+	Time := timeFinally.Nanoseconds()
+	return Time
+}
 func genCSVfile(sortName string, sizes []int, execTimes []int64) {
-	fileName := fmt.Sprintf("./homeWorks/First/measurements/%sData.csv", sortName)
+	fileName := fmt.Sprintf("./internal/sorts/csvData/%sData.csv", sortName)
 	file, err := os.Create(fileName)
 	if err != nil {
 		fmt.Println(err)

@@ -15,11 +15,9 @@ import (
 func generateLineAverageItems(arrY []int64, quantity int) []opts.LineData {
 	items := make([]opts.LineData, 0)
 	for i := 0; i < quantity; i++ {
-		y := arrY[i]
-		fmt.Println(float64(y) / 1e9)
 		items = append(items, opts.LineData{Name: "microseconds", Value: arrY[i] / 1e3})
 	}
-	fmt.Println(items)
+	//fmt.Println(items)
 	return items
 }
 
@@ -34,8 +32,8 @@ func generateLineWorstItems(arrY []int64, quantity int) []opts.LineData {
 	return items
 }
 
-func CreateLineChart(arrX []int, arrY, arrYWorst, arrYBest []int64, quantity int, SortName string) {
-	fileName := fmt.Sprintf("%s.html", SortName)
+func CreateLineChart(arrX []int, arrY, arrYWorst, arrYBest, arrYAlmost []int64, quantity int, SortName string) {
+	fileName := fmt.Sprintf("./internal/sorts/plots/%s.html", SortName)
 
 	// create a new line instance
 	line := charts.NewLine()
@@ -43,8 +41,8 @@ func CreateLineChart(arrX []int, arrY, arrYWorst, arrYBest []int64, quantity int
 	// set some global options like Title/Legend/ToolTip or anything else
 	line.SetGlobalOptions(
 		charts.WithInitializationOpts(opts.Initialization{
-			//Theme: types.ThemeInfographic,
-			Theme: types.ThemeRoma,
+			Theme: types.ThemeWonderland,
+			//Theme: types.ThemeRoma,
 			//Theme: types.ThemeRomantic,
 		}),
 		charts.WithTitleOpts(opts.Title{
@@ -63,9 +61,10 @@ func CreateLineChart(arrX []int, arrY, arrYWorst, arrYBest []int64, quantity int
 
 	//line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
 	line.SetXAxis(stringArrayX).
-		AddSeries("Best case", generateLineAverageItems(arrYBest, quantity)).
-		AddSeries("Average case", generateLineAverageItems(arrY, quantity)).
-		AddSeries("Worst case", generateLineAverageItems(arrYWorst, quantity)).
+		AddSeries("Almost sorted(90/10) case", generateLineAverageItems(arrYAlmost, quantity)).
+		AddSeries("Already sorted case", generateLineAverageItems(arrYBest, quantity)).
+		AddSeries("Random case", generateLineAverageItems(arrY, quantity)).
+		AddSeries("Reverse Sorted case", generateLineAverageItems(arrYWorst, quantity)).
 		SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &tr, ConnectNulls: &tr}))
 	f, _ := os.Create(fileName)
 	_ = line.Render(f)

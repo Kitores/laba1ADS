@@ -6,16 +6,20 @@ import (
 	"time"
 )
 
-func Try1() {
+func Test() {
 	//arr := []int{-9, -231, 67, -50, 42, -6, 4, 54, 2, 7, 71, 34, 242, 533, 23352, 523, 13, 11}
 	//size := []int{100, 500, 1000, 5000, 10000}
-	arr := randArray(10, 2)
+	arr := randArray(100, 2)
 	fmt.Println(arr)
 	timeStart := time.Now()
-	ShellSort(arr)
+	QuickSort(arr, 0, len(arr)*9/10-1)
 	timeEnd := time.Since(timeStart)
 
 	fmt.Println(arr, timeEnd)
+
+	nums := []int{100, 200, 300, 400, 500, 600, 700, 800, 900}
+	nums = nums[:5]
+	fmt.Println(nums)
 	//
 	//worstArr := randArray(size[4], 2)
 
@@ -130,7 +134,7 @@ func ShelliSort(nums []int) {
 		nums[j+1] = a
 	}
 }
-func shellGaps(length int) []int {
+func shellGaps1(length int) []int {
 	var gaps = []int{}
 	i := length
 	for i > 1 {
@@ -140,8 +144,72 @@ func shellGaps(length int) []int {
 	return gaps
 }
 
+// Функция для генерации последовательности Шелла
+func shellGaps2(n int) []int {
+	gaps := []int{}
+	for gap := n / 2; gap > 0; gap /= 2 {
+		gaps = append(gaps, gap)
+	}
+	return gaps
+}
+
+// Функция для генерации последовательности Хиббарда
+func hibbardGaps(n int) []int {
+	gaps := []int{}
+	for i := 1; (1<<i)-1 < n; i++ {
+		gaps = append(gaps, (1<<i)-1)
+	}
+	return gaps
+}
+
+// Функция для генерации последовательности Прато
+func prattGaps(n int) []int {
+	gaps := []int{}
+	for i := 0; (1 << i) <= n; i++ {
+		for j := 0; (1 << j) <= n; j++ {
+			gap := (1 << i) * (3 << j)
+			if gap <= n {
+				gaps = append(gaps, gap)
+			}
+		}
+	}
+	return gaps
+}
+
 func ShellSort(arr []int) {
-	gaps := shellGaps(len(arr))
+	gaps := shellGaps2(len(arr))
+	k := len(gaps)
+	gap := gaps[0]
+	for k >= 1 {
+		for i := gap; i < len(arr); i++ {
+			a := arr[i]
+			for j := i - gap; j >= 0 && arr[j] > a; j -= gap {
+				arr[j+gap] = arr[j]
+				arr[j] = a
+			}
+		}
+		k--
+		gap = gaps[k]
+	}
+}
+func ShellSortHibbard(arr []int) {
+	gaps := hibbardGaps(len(arr))
+	k := len(gaps)
+	gap := gaps[0]
+	for k >= 1 {
+		for i := gap; i < len(arr); i++ {
+			a := arr[i]
+			for j := i - gap; j >= 0 && arr[j] > a; j -= gap {
+				arr[j+gap] = arr[j]
+				arr[j] = a
+			}
+		}
+		k--
+		gap = gaps[k]
+	}
+}
+func ShellSortPratt(arr []int) {
+	gaps := prattGaps(len(arr))
 	k := len(gaps)
 	gap := gaps[0]
 	for k >= 1 {
@@ -255,6 +323,36 @@ func MergeSort(arr []int) []int {
 	//fmt.Println(L, R)
 	return merge(MergeSort(L), MergeSort(R))
 
+}
+
+func heapify(arr []int, i, heapLen int) {
+	largest := i
+	left := 2*i + 1
+	right := 2*i + 2
+	if left < heapLen && arr[left] > arr[largest] {
+		largest = left
+	}
+	if right < heapLen && arr[right] > arr[largest] {
+		largest = right
+	}
+	if largest != i {
+		Swap(arr, i, largest)
+		heapify(arr, largest, heapLen)
+	}
+
+}
+
+func HeapSort(arr []int) {
+	heapLen := len(arr)
+	//1. make haep
+	for i := heapLen/2 - 1; i >= 0; i-- {
+		heapify(arr, i, heapLen)
+	}
+	//2. delete elements
+	for i := heapLen - 1; i >= 0; i-- {
+		Swap(arr, 0, i)
+		heapify(arr, i, heapLen)
+	}
 }
 
 //func merge(left, right []int) []int {
