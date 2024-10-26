@@ -12,7 +12,8 @@ func Test() {
 	arr := randArray(100, 2)
 	fmt.Println(arr)
 	timeStart := time.Now()
-	QuickSort(arr, 0, len(arr)*9/10-1)
+	//QuickSort(arr, 0, len(arr)*9/10-1)
+	BubbleSort(arr)
 	timeEnd := time.Since(timeStart)
 
 	fmt.Println(arr, timeEnd)
@@ -49,7 +50,7 @@ func randArray(size int, seed int64) []int {
 	return arr
 }
 
-func CrazySort(nums []int) []int {
+func StrangeSort(nums []int) []int {
 	counter := 0
 	for {
 		if IsSorted(nums) {
@@ -72,10 +73,13 @@ func CrazySort(nums []int) []int {
 
 func BubbleSort(arr []int) {
 	N := len(arr)
-	for i := 0; i < N-1; i++ {
+	flag := true
+	for i := 0; i < N-1 && flag; i++ {
+		flag = false
 		for j := 0; j < N-i-1; j++ {
 			if arr[j] > arr[j+1] {
 				Swap(arr, j, j+1)
+				flag = true
 			}
 		}
 	}
@@ -122,18 +126,6 @@ func SelectSort(nums []int) {
 	}
 }
 
-func ShelliSort(nums []int) {
-
-	for i := 1; i < len(nums); i++ {
-		a := nums[i]
-		j := i - 1
-		for j >= 0 && nums[j] > a {
-			nums[j+1] = nums[j]
-			j--
-		}
-		nums[j+1] = a
-	}
-}
 func shellGaps1(length int) []int {
 	var gaps = []int{}
 	i := length
@@ -144,7 +136,6 @@ func shellGaps1(length int) []int {
 	return gaps
 }
 
-// Функция для генерации последовательности Шелла
 func shellGaps2(n int) []int {
 	gaps := []int{}
 	for gap := n / 2; gap > 0; gap /= 2 {
@@ -153,7 +144,6 @@ func shellGaps2(n int) []int {
 	return gaps
 }
 
-// Функция для генерации последовательности Хиббарда
 func hibbardGaps(n int) []int {
 	gaps := []int{}
 	for i := 1; (1<<i)-1 < n; i++ {
@@ -162,7 +152,6 @@ func hibbardGaps(n int) []int {
 	return gaps
 }
 
-// Функция для генерации последовательности Прато
 func prattGaps(n int) []int {
 	gaps := []int{}
 	for i := 0; (1 << i) <= n; i++ {
@@ -245,15 +234,6 @@ func QuickSort(arr []int, left, right int) {
 	}
 }
 
-//	func MergeSort(arr []int) []int {
-//		var left = arr[0]
-//		var right = arr[len(arr)-1]
-//		var mid = arr[len(arr)/2]
-//
-//		for i := 1; i < len(arr)-1; i++ {
-//
-//		}
-//	}
 func reversePartition(arr []int, left, right int) int {
 	pivot := arr[right]
 	j := left - 1
@@ -354,44 +334,3 @@ func HeapSort(arr []int) {
 		heapify(arr, i, heapLen)
 	}
 }
-
-//func merge(left, right []int) []int {
-//	arr := []int{}
-//	i, j := 0, 0
-//
-//	for i < len(left) && j < len(right) {
-//		if left[i] < right[j] {
-//			arr = append(arr, left[i])
-//			i++
-//		} else {
-//			arr = append(arr, right[j])
-//			j++
-//		}
-//	}
-//
-//	// Копируем оставшиеся элементы (если есть)
-//	for i < len(left) {
-//		arr = append(arr, left[i])
-//		i++
-//	}
-//
-//	for j < len(right) {
-//		arr = append(arr, right[j])
-//		j++
-//	}
-//
-//	return arr
-//}
-//
-//// Функция сортировки слиянием
-//func MergeSort(arr []int) []int {
-//	if len(arr) <= 1 {
-//		return arr
-//	}
-//
-//	mid := len(arr) / 2
-//	left := MergeSort(arr[:mid])
-//	right := MergeSort(arr[mid:])
-//
-//	return merge(left, right)
-//}

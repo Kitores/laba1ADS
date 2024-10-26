@@ -7,11 +7,10 @@ import (
 	"github.com/go-echarts/go-echarts/v2/types"
 	"strconv"
 
-	//"math/rand"
 	"os"
 )
 
-// generate data for line chart Average case
+// generate data for line chart
 func generateLineAverageItems(arrY []int64, quantity int) []opts.LineData {
 	items := make([]opts.LineData, 0)
 	for i := 0; i < quantity; i++ {
@@ -21,21 +20,10 @@ func generateLineAverageItems(arrY []int64, quantity int) []opts.LineData {
 	return items
 }
 
-func generateLineWorstItems(arrY []int64, quantity int) []opts.LineData {
-	items := make([]opts.LineData, 0)
-	for i := 0; i < quantity; i++ {
-		y := arrY[i]
-		fmt.Println(y)
-		items = append(items, opts.LineData{Name: "microseconds", Value: arrY[i] / 1e3})
-	}
-	fmt.Println(items)
-	return items
-}
-
 func CreateLineChart(arrX []int, arrY, arrYWorst, arrYBest, arrYAlmost []int64, quantity int, SortName string) {
 	fileName := fmt.Sprintf("./internal/sorts/plots/%s.html", SortName)
 
-	// create a new line instance
+	// create a new line
 	line := charts.NewLine()
 
 	// set some global options like Title/Legend/ToolTip or anything else

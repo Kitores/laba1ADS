@@ -15,10 +15,10 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, 
 	var worstExecTime int64
 	var bestExecTime int64
 	var almostExecTime int64
-	sortsQuadro := []string{"Selection Sort", "Insertion Sort", "Bubble Sort", "Shell Sort(shellGaps)", "Shell Sort(hibbardGaps)", "Shell Sort(prattGaps)"}
+	sortsQuadratic := []string{"Selection Sort", "Insertion Sort", "Bubble Sort", "Shell Sort(shellGaps)", "Shell Sort(hibbardGaps)", "Shell Sort(prattGaps)"}
 	sizes := []int{1000, 5000, 10000, 30000, 50000, 70000, 100000, 200000, 300000, 500000}
 	// O(n^2)
-	if contains(sortsQuadro, sortName) {
+	if contains(sortsQuadratic, sortName) {
 		sizes = sizes[:6]
 	}
 	//sizes := []int{70}
@@ -120,10 +120,10 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, 
 		arrY = append(arrY, execTime)
 		arrX = append(arrX, size)
 	}
-	genCSVfile(sortName, arrX, arrY)
-	//alpha, beta := linearRegression(arrX, arrY)
-	//Plot()
-	//fmt.Printf("Уравнение регрессии: y = %f + %f * x\n", alpha, beta)
+	//genCSVfile(sortName+"Average", arrX, arrY)
+	//genCSVfile(sortName+"Best", arrX, arrYBest)
+	//genCSVfile(sortName+"Worst", arrX, arrYWorst)
+	//genCSVfile(sortName+"Almost", arrX, arrYAlmost)
 
 	return arrX, arrY, arrYWorst, arrYBest, arrYAlmost
 }
@@ -136,36 +136,7 @@ func contains(slice []string, item string) bool {
 	}
 	return false
 }
-func TimeMeasurementWorst(sortName string, seed int64) (arrYWorst []int64) {
-	var worstExecTime int64
-	sizes := []int{10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000}
-	//sizes := []int{70}
 
-	for _, size := range sizes {
-
-		arr := randArray(size, seed)
-
-		switch sortName {
-		case "Selection Sort":
-			worstExecTime = measuringSelectionSort(arr)
-		case "Insertion Sort":
-			worstExecTime = measuringInsertionSort(arr)
-		case "Quick Sort":
-			worstExecTime = measuringQuickSort(arr)
-		case "Bubble Sort":
-			sorts.ReverseQuickSort(arr, 0, size-1)
-			worstExecTime = measuringBubbleSort(arr)
-		case "Merge Sort":
-			sorts.ReverseQuickSort(arr, 0, size-1)
-			worstExecTime = measuringBubbleSort(arr)
-
-		}
-		fmt.Println(worstExecTime)
-		arrYWorst = append(arrYWorst, worstExecTime)
-		//arrX = append(arrX, size)
-	}
-	return arrYWorst
-}
 func randArray(size int, seed int64) []int {
 	rand.Seed(seed)
 	arr := make([]int, size)
