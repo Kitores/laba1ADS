@@ -27,11 +27,9 @@ def main():
 
                     # Read each row in the CSV file
                     for row in reader:
-                        # print(row)  # Output each row as a dictionary
-                        y_values.append(float(row['execTimes']))  # Add execTimes to list
-                        x_values.append(float(row['sizes']))       # Add sizes to list
+                        y_values.append(float(row['execTimes']))
+                        x_values.append(float(row['sizes']))
 
-                # Check if we have data to process
                 if not x_values or not y_values:
                     print(f"No data found in {filename}. Skipping.")
                     continue
@@ -39,8 +37,7 @@ def main():
                 # Convert lists to NumPy arrays
                 y = np.array(y_values)
                 x = np.array(x_values)
-                
-                # Fit model based on sorting algorithm type
+
                 if sort_name == "Quick Sort" and type == "Worst":
                     param, _ = curve_fit(n2, x, y)
                     ans = n2(x, param[0], param[1])
@@ -77,7 +74,6 @@ def main():
                     param, _ = curve_fit(n2, x, y)
                     ans = n2(x, param[0], param[1])
 
-                # Plotting results
                 plt.scatter(x, y, label='Данные', color='blue')
                 plt.plot(x, ans, '--', label='Подогнанная модель', color='red')
                 plt.xlabel('Размеры (sizes)')
@@ -95,7 +91,7 @@ def main():
             except FileNotFoundError:
                 print(f"File {filename} not found. Skipping.")
             except Exception as e:
-                print(f"An error occurred while processing {filename}: {e}")
+                print(f"An error {filename}: {e}")
 
     print(k)
 
@@ -108,13 +104,6 @@ def n32(x, a, b):
 def n2(x, a, b):
     return a * (x ** 2) + b
 
-def f(x, a, b):
-    x = np.asarray(x)
-    value = x * b
-    if np.any(value <= 0):
-        raise ValueError("Input to log must be positive.")
-    return a * (x * np.log(value) / np.log(2))
-
 def nLogN(x, a, b):
     return a * (x * np.log(x)) + b
 def nLog2N(x, a, b):
@@ -124,25 +113,18 @@ def const(x, a, b):
 
 def plotN2():
     n = np.arange(2, 500000) 
-    # Предположим, что у вас есть соответствующие значения времени выполнения (например, O(n^2))
-    # Для примера мы можем использовать квадратичную зависимость
-    # exec_times = n * (np.log(n)/np.log(2))**2  # Это просто для примера; замените на ваши реальные данные
+
     exec_times = n
-    # Создаем график
-    # plt.figure(figsize=(10, 6))
+
     plt.plot(n, exec_times, '-', label='Время выполнения (O(n))', color='blue')
 
-    # Настраиваем график
     plt.title('График времени выполнения в зависимости от размера входных данных')
     plt.xlabel('Размер входных данных (sizes)')
     plt.ylabel('Время выполнения')
     plt.grid()
     plt.legend()
 
-    # Показываем график
     plt.show()
-
-
 
 if __name__ == "__main__":
     main()

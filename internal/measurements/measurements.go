@@ -120,10 +120,10 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, 
 		arrY = append(arrY, execTime)
 		arrX = append(arrX, size)
 	}
-	//genCSVfile(sortName+"Average", arrX, arrY)
-	//genCSVfile(sortName+"Best", arrX, arrYBest)
-	//genCSVfile(sortName+"Worst", arrX, arrYWorst)
-	//genCSVfile(sortName+"Almost", arrX, arrYAlmost)
+	genCSVfile(sortName+"Average", arrX, arrY)
+	genCSVfile(sortName+"Best", arrX, arrYBest)
+	genCSVfile(sortName+"Worst", arrX, arrYWorst)
+	genCSVfile(sortName+"Almost", arrX, arrYAlmost)
 
 	return arrX, arrY, arrYWorst, arrYBest, arrYAlmost
 }
