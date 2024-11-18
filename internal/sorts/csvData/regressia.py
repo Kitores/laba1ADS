@@ -14,7 +14,7 @@ def main():
     # sort_names = {"Selection Sort", "Insertion Sort", "Quick Sort", "Bubble Sort", 
     #               "Merge Sort", "Shell Sort(shellGaps)", "Shell Sort(hibbardGaps)", 
     #               "Shell Sort(prattGaps)", "Heap Sort"}
-    sort_names = {"Heap Sort"}
+    sort_names = {"Insertion Sort"}
     for type in types:
         for sort_name in sort_names:
             x_values = []

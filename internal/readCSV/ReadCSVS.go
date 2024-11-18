@@ -51,6 +51,6 @@ func ReadCSV(sortName string) Sort {
 		Sizes:     sizes,
 	}
 
-	fmt.Println(sort)
+	//fmt.Println(sort)
 	return sort
 }

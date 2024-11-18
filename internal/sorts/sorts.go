@@ -7,31 +7,20 @@ import (
 )
 
 func Test() {
-	//arr := []int{-9, -231, 67, -50, 42, -6, 4, 54, 2, 7, 71, 34, 242, 533, 23352, 523, 13, 11}
+
 	//size := []int{100, 500, 1000, 5000, 10000}
-	arr := randArray(100, 2)
+	arr := randArray(1000, 2)
 	fmt.Println(arr)
 	timeStart := time.Now()
 	//QuickSort(arr, 0, len(arr)*9/10-1)
-	BubbleSort(arr)
+	HeapSort(arr)
 	timeEnd := time.Since(timeStart)
 
 	fmt.Println(arr, timeEnd)
 
-	nums := []int{100, 200, 300, 400, 500, 600, 700, 800, 900}
-	nums = nums[:5]
-	fmt.Println(nums)
-	//
-	//worstArr := randArray(size[4], 2)
-
-	//CrazySort(arr)
-	//SelectSort(arr)
-	//InsertionSort(arr)
-
-	//InsertionSort(arr)
-	//ShellSort(arr, Gaps(lenght))
-	//QuickSort(arr, 0, len(arr)-1)
-	//BubbleSort(arr)
+	//nums := []int{100, 200, 300, 400, 500, 600, 700, 800, 900}
+	//nums = nums[:5]
+	//fmt.Println(nums)
 
 	s := time.Now().UnixNano()
 	testarr := randArray(10, s)
@@ -45,7 +34,7 @@ func randArray(size int, seed int64) []int {
 	rand.Seed(seed)
 	arr := make([]int, size)
 	for i := 0; i < size; i++ {
-		arr[i] = rand.Intn(10000)
+		arr[i] = rand.Intn(1000)
 	}
 	return arr
 }
@@ -329,8 +318,8 @@ func HeapSort(arr []int) {
 		heapify(arr, i, heapLen)
 	}
 	//2. delete elements
-	for i := heapLen - 1; i >= 0; i-- {
+	for i := heapLen - 1; i > 0; i-- {
 		Swap(arr, 0, i)
-		heapify(arr, i, heapLen)
+		heapify(arr, 0, i)
 	}
 }

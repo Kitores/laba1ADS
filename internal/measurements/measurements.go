@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, arrYBest, arrYAlmost []int64) {
+func TimeMeasurement(sortName string, seed int64) (arrX []float64, arrY, arrYWorst, arrYBest, arrYAlmost []int64) {
 	var execTime int64
 	var worstExecTime int64
 	var bestExecTime int64
@@ -111,19 +111,23 @@ func TimeMeasurement(sortName string, seed int64) (arrX []int, arrY, arrYWorst, 
 			sorts.QuickSort(arr, 0, size*9/10-1)
 			almostExecTime = measuringHeapSort(arr)
 		}
-		fmt.Println(execTime, worstExecTime, bestExecTime, almostExecTime)
+		//fmt.Println(execTime, worstExecTime, bestExecTime, almostExecTime)
 
 		//genCSVfile(sortName, size, execTime)
 		arrYAlmost = append(arrYAlmost, almostExecTime)
 		arrYBest = append(arrYBest, bestExecTime)
 		arrYWorst = append(arrYWorst, worstExecTime)
 		arrY = append(arrY, execTime)
-		arrX = append(arrX, size)
+		arrX = append(arrX, float64(size))
 	}
 	genCSVfile(sortName+"Average", arrX, arrY)
 	genCSVfile(sortName+"Best", arrX, arrYBest)
 	genCSVfile(sortName+"Worst", arrX, arrYWorst)
 	genCSVfile(sortName+"Almost", arrX, arrYAlmost)
+	//var arrXfloat64 []float64
+	//for _, val := range arrX {
+	//	arrXfloat64 = append(arrXfloat64, float64(val))
+	//}
 
 	return arrX, arrY, arrYWorst, arrYBest, arrYAlmost
 }
@@ -221,7 +225,7 @@ func measuringHeapSort(arr []int) int64 {
 	Time := timeFinally.Nanoseconds()
 	return Time
 }
-func genCSVfile(sortName string, sizes []int, execTimes []int64) {
+func genCSVfile(sortName string, sizes []float64, execTimes []int64) {
 	fileName := fmt.Sprintf("./internal/sorts/csvData/%sData.csv", sortName)
 	file, err := os.Create(fileName)
 	if err != nil {
@@ -239,7 +243,7 @@ func genCSVfile(sortName string, sizes []int, execTimes []int64) {
 	defer csvWriter.Flush()
 
 	for i := 0; i < len(sizes); i++ {
-		data := []string{strconv.Itoa(sizes[i]), strconv.Itoa(int(execTimes[i]))}
+		data := []string{strconv.Itoa(int(sizes[i])), strconv.Itoa(int(execTimes[i]))}
 		if err = csvWriter.Write(data); err != nil {
 			fmt.Println(err)
 		}
